@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make it Easier - Note Sorter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #fff7ed 0%, #ffffff 50%, #eff6ff 100%);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 1.5rem;
+        }
+        
+        .header-content {
+            max-width: 64rem;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, #fb923c, #ea580c);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        
+        .title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+        }
+        
+        .subtitle {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .btn-reset {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+        
+        .btn-reset:hover {
+            background: #fee2e2;
+        }
+        
+        .btn-export {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+        
+        .btn-export:hover {
+            background: #e5e7eb;
+        }
+        
+        .main-content {
+            max-width: 64rem;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        
+        .note-input-section {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .note-count {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .textarea-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .note-textarea {
+            width: 100%;
+            height: 16rem;
+            padding: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.75rem;
+            resize: none;
+            font-family: inherit;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #111827;
+            background: white;
+        }
+        
+        .note-textarea:focus {
+            outline: none;
+            border-color: #ea580c;
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
+        }
+        
+        .note-textarea::placeholder {
+            color: #9ca3af;
+        }
+        
+        .add-btn {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            width: 3rem;
+            height: 3rem;
+            background: #ea580c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+            transition: all 0.2s;
+        }
+        
+        .add-btn:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+        
+        .tag-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .category-tag-group {
+            border: 1px solid #e5e7eb; /* Subtle border for separation */
+            border-radius: 1rem;
+            padding: 1.5rem; /* More padding for distinct sections */
+            margin-top: 1.5rem;
+            background: #fdfdfd; /* Slightly off-white background */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .category-tag-group h4 {
+            font-size: 1rem; /* Slightly smaller for sub-heading */
+            color: #374151;
+            margin-bottom: 1rem; /* More space below heading */
+            font-weight: 600; /* Bolder for clarity */
+            display: flex; /* Allow icon next to text */
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tag-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .tag-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .tag-background {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1d4ed8;
+        }
+        
+        .tag-seeit {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #15803d;
+        }
+        
+        .tag-findit {
+            background: #faf5ff;
+            border-color: #d8b4fe;
+            color: #7c3aed;
+        }
+        
+        .tag-useit {
+            background: #fff7ed;
+            border-color: #fed7aa;
+            color: #ea580c;
+        }
+        
+        .tag-other {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+
+        /* Styles for comfort level buttons (small tags shown on notes) */
+        .tag-comfort-verychallenging {
+            background-color: #fef2f2; /* Light Red */
+            border-color: #fecaca; /* Red */
+            color: #dc2626; /* Dark Red */
+        }
+        .tag-comfort-challenging {
+            background-color: #fffbeb; /* Light Amber */
+            border-color: #fde68a; /* Amber */
+            color: #d97706; /* Dark Amber */
+        }
+        .tag-comfort-comfortable {
+            background-color: #f0fdf4; /* Light Green */
+            border-color: #bbf7d0; /* Green */
+            color: #16a34a; /* Dark Green */
+        }
+
+        /* NEW: Styles for the large circular color buttons */
+        .comfort-circle-buttons {
+            display: flex;
+            justify-content: space-around; /* Distribute space evenly */
+            align-items: center;
+            gap: 1rem; /* Space between buttons */
+            margin-top: 1rem;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+
+        .comfort-circle-btn {
+            width: 80px; /* Fixed width for circle */
+            height: 80px; /* Fixed height for circle */
+            border-radius: 50%; /* Makes it circular */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem; /* Smaller font for circle to fit text */
+            font-weight: 600;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Subtle shadow */
+            transition: all 0.2s ease-in-out;
+            line-height: 1.2; /* Adjust line height for multi-line text */
+            padding: 5px; /* Add some padding to text inside circle */
+            flex-shrink: 0; /* Prevent shrinking on small screens */
+        }
+
+        .comfort-circle-btn:hover {
+            transform: scale(1.05); /* Slight grow on hover */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* More pronounced shadow */
+        }
+
+        /* Specific colors for circle buttons */
+        .comfort-circle-btn.red {
+            background-color: #ef4444; /* Tailwind red-500 */
+        }
+        .comfort-circle-btn.red:hover {
+            background-color: #dc2626; /* Tailwind red-600 */
+        }
+
+        .comfort-circle-btn.amber {
+            background-color: #f59e0b; /* Tailwind amber-500 */
+        }
+        .comfort-circle-btn.amber:hover {
+            background-color: #d97706; /* Tailwind amber-600 */
+        }
+
+        .comfort-circle-btn.green {
+            background-color: #22c55e; /* Tailwind green-500 */
+        }
+        .comfort-circle-btn.green:hover {
+            background-color: #16a34a; /* Tailwind green-600 */
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem; /* Space between input and category cards */
+        }
+        
+        .category-card {
+            padding: 1rem;
+            border: 2px solid;
+            border-radius: 0.75rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+        
+        .category-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-icon {
+            font-size: 1.25rem;
+        }
+        
+        .category-count {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .category-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .category-desc {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+        
+        .category-view {
+            margin-top: 1.5rem;
+        }
+        
+        .category-view-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Changed from between to space-between for better alignment */
+            margin-bottom: 1.5rem;
+        }
+        
+        .back-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .back-btn {
+            padding: 0.5rem;
+            background: transparent;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: background 0.2s;
+        }
+        
+        .back-btn:hover {
+            background: #f3f4f6;
+        }
+        
+        .category-title-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .category-notes-section {
+            margin-top: 1.5rem;
+        }
+
+        .comfort-level-heading {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .notes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .note-card {
+            background: white;
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+            transition: box-shadow 0.2s;
+        }
+        
+        .note-card:hover {
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        
+        .note-time {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: color 0.2s;
+        }
+        
+        .delete-btn:hover {
+            color: #ef4444;
+        }
+        
+        .note-text {
+            color: #111827;
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+        
+        .note-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+        
+        .note-tag {
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 0;
+            color: #6b7280;
+        }
+        
+        .empty-icon {
+            width: 4rem;
+            height: 4rem;
+            background: #f3f4f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            color: #9ca3af;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-wrap: wrap;
+            }
+
+            .comfort-circle-buttons {
+                flex-direction: column; /* Stack buttons vertically on small screens */
+            }
+
+            .comfort-circle-btn {
+                width: 100%; /* Full width on small screens */
+                height: 60px; /* Shorter height when stacked */
+                border-radius: 0.75rem; /* Rounded rect, not circle, when stacked */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">📝</div>
+                <div>
+                    <h1 class="title">Make it Easier</h1>
+                    <p class="subtitle">Note Sorter</p>
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-reset" onclick="resetAll()">
+                    🔄 Reset All
+                </button>
+                <button class="btn btn-export" onclick="exportNotes()">
+                    💾 Export
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div id="main-view">
+            <div class="note-input-section">
+                <div class="section-header">
+                    <h2 class="section-title">Quick Notes</h2>
+                    <div class="note-count" id="note-count">0 notes</div>
+                </div>
+                
+                <div class="textarea-container">
+                    <textarea 
+                        id="note-textarea" 
+                        class="note-textarea" 
+                        placeholder="Start writing your notes here... Use tags like #background #other directly, or click the colored buttons below for See It, Find It, Use It comfort levels."
+                        oninput="handleNoteInput()"
+                        onfocus="showAddButton()"
+                    ></textarea>
+                    <button id="add-btn" class="add-btn hidden" onclick="addNote()">+</button>
+                </div>
+                
+                <div class="tag-buttons">
+                    <button class="tag-btn tag-background" onclick="addTag('#background')">
+                        📄 Background
+                    </button>
+                    <button class="tag-btn tag-other" onclick="addTag('#other')">
+                        📋 Other
+                    </button>
+                </div>
+
+                <div class="category-tag-group">
+                    <h4><span class="category-icon">👀</span> See It - Comfort Level</h4>
+                    <div class="comfort-circle-buttons">
+                        <button class="comfort-circle-btn red" onclick="addTag('#seeit #verychallenging')">
+                            Very <br> Challenging
+                        </button>
+                        <button class="comfort-circle-btn amber" onclick="addTag('#seeit #challenging')">
+                            Challenging
+                        </button>
+                        <button class="comfort-circle-btn green" onclick="addTag('#seeit #comfortable')">
+                            Comfortable
+                        </button>
+                    </div>
+                </div>
+
+                <div class="category-tag-group">
+                    <h4><span class="category-icon">🔍</span> Find It - Comfort Level</h4>
+                    <div class="comfort-circle-buttons">
+                        <button class="comfort-circle-btn red" onclick="addTag('#findit #verychallenging')">
+                            Very <br> Challenging
+                        </button>
+                        <button class="comfort-circle-btn amber" onclick="addTag('#findit #challenging')">
+                            Challenging
+                        </button>
+                        <button class="comfort-circle-btn green" onclick="addTag('#findit #comfortable')">
+                            Comfortable
+                        </button>
+                    </div>
+                </div>
+
+                <div class="category-tag-group">
+                    <h4><span class="category-icon">🔧</span> Use It - Comfort Level</h4>
+                    <div class="comfort-circle-buttons">
+                        <button class="comfort-circle-btn red" onclick="addTag('#useit #verychallenging')">
+                            Very <br> Challenging
+                        </button>
+                        <button class="comfort-circle-btn amber" onclick="addTag('#useit #challenging')">
+                            Challenging
+                        </button>
+                        <button class="comfort-circle-btn green" onclick="addTag('#useit #comfortable')">
+                            Comfortable
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="categories-grid">
+                <div class="category-card tag-background" onclick="showCategory('background')">
+                    <div class="category-header">
+                        <span class="category-icon">📄</span>
+                        <span class="category-count" id="background-count">0</span>
+                    </div>
+                    <h3 class="category-name">Background</h3>
+                    <p class="category-desc" id="background-desc">No notes yet</p>
+                </div>
+                
+                <div class="category-card tag-seeit" onclick="showCategory('seeit')">
+                    <div class="category-header">
+                        <span class="category-icon">👀</span>
+                        <span class="category-count" id="seeit-count">0</span>
+                    </div>
+                    <h3 class="category-name">See It</h3>
+                    <p class="category-desc" id="seeit-desc">No notes yet</p>
+                </div>
+                
+                <div class="category-card tag-findit" onclick="showCategory('findit')">
+                    <div class="category-header">
+                        <span class="category-icon">🔍</span>
+                        <span class="category-count" id="findit-count">0</span>
+                    </div>
+                    <h3 class="category-name">Find It</h3>
+                    <p class="category-desc" id="findit-desc">No notes yet</p>
+                </div>
+                
+                <div class="category-card tag-useit" onclick="showCategory('useit')">
+                    <div class="category-header">
+                        <span class="category-icon">🔧</span>
+                        <span class="category-count" id="useit-count">0</span>
+                    </div>
+                    <h3 class="category-name">Use It</h3>
+                    <p class="category-desc" id="useit-desc">No notes yet</p>
+                </div>
+                
+                <div class="category-card tag-other" onclick="showCategory('other')">
+                    <div class="category-header">
+                        <span class="category-icon">📋</span>
+                        <span class="category-count" id="other-count">0</span>
+                    </div>
+                    <h3 class="category-name">Other</h3>
+                    <p class="category-desc" id="other-desc">No notes yet</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="category-view" class="category-view hidden">
+            <div class="category-view-header">
+                <div class="back-section">
+                    <button class="back-btn" onclick="showMainView()">←</button>
+                    <div class="category-title-section">
+                        <span id="current-category-icon">📄</span>
+                        <h2 class="category-title" id="current-category-title">Background</h2>
+                    </div>
+                </div>
+                <div class="note-count" id="category-note-count">0 notes</div>
+            </div>
+            
+            <div class="category-notes-section" id="category-notes-section">
+                </div>
+            
+            <div id="empty-category" class="empty-state hidden">
+                <div class="empty-icon" id="empty-category-icon">📄</div>
+                <p>No notes in this category yet.</p>
+                <p style="font-size: 0.875rem;">Add some notes with the <span id="empty-category-tag">#background</span> tag.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let notes = [];
+        let currentCategory = null;
+        
+        const categories = {
+            background: { label: 'Background', icon: '📄', tag: '#background', primary: true },
+            seeit: { label: 'See It', icon: '👀', tag: '#seeit', primary: true },
+            findit: { label: 'Find It', icon: '🔍', tag: '#findit', primary: true },
+            useit: { label: 'Use It', icon: '🔧', tag: '#useit', primary: true },
+            other: { label: 'Other', icon: '📋', tag: '#other', primary: true }
+        };
+
+        const comfortLevels = {
+            verychallenging: { label: 'Very Challenging', tag: '#verychallenging', class: 'tag-comfort-verychallenging' },
+            challenging: { label: 'Challenging', tag: '#challenging', class: 'tag-comfort-challenging' },
+            comfortable: { label: 'Comfortable', tag: '#comfortable', class: 'tag-comfort-comfortable' }
+        };
+
+        function handleNoteInput() {
+            const textarea = document.getElementById('note-textarea');
+            const addBtn = document.getElementById('add-btn');
+            
+            if (textarea.value.trim()) {
+                addBtn.classList.remove('hidden');
+            } else {
+                addBtn.classList.add('hidden');
+            }
+        }
+
+        function showAddButton() {
+            handleNoteInput();
+        }
+
+        function addNote() {
+            const textarea = document.getElementById('note-textarea');
+            const noteText = textarea.value.trim();
+            
+            if (noteText) {
+                const detectedCategories = detectCategories(noteText);
+                const detectedComfortLevel = detectComfortLevel(noteText);
+
+                const newNote = {
+                    id: Date.now(),
+                    text: noteText,
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    categories: detectedCategories,
+                    comfortLevel: detectedComfortLevel // Store detected comfort level
+                };
+                
+                notes.unshift(newNote);
+                textarea.value = '';
+                document.getElementById('add-btn').classList.add('hidden');
+                updateUI();
+            }
+        }
+
+        function detectCategories(text) {
+            const detected = [];
+            const lowerText = text.toLowerCase();
+            
+            Object.keys(categories).forEach(catId => {
+                if (categories[catId].primary && lowerText.includes(categories[catId].tag)) {
+                    detected.push(catId);
+                }
+            });
+            
+            return detected.length > 0 ? detected : ['other'];
+        }
+
+        function detectComfortLevel(text) {
+            const lowerText = text.toLowerCase();
+            for (const levelId in comfortLevels) {
+                if (lowerText.includes(comfortLevels[levelId].tag)) {
+                    return levelId;
+                }
+            }
+            return null; // No comfort level detected
+        }
+
+        function addTag(tag) {
+            const textarea = document.getElementById('note-textarea');
+            let textValue = textarea.value;
+            
+            // Normalize tag to remove leading/trailing spaces and handle multiple spaces
+            const tagsToAdd = tag.split(' ').filter(t => t.startsWith('#')).map(t => t.toLowerCase());
+
+            // Remove existing comfort level tags if a new one is being added
+            const isAddingComfortTag = tagsToAdd.some(t => Object.values(comfortLevels).map(l => l.tag).includes(t));
+            if (isAddingComfortTag) {
+                for (const levelId in comfortLevels) {
+                    const existingTag = comfortLevels[levelId].tag;
+                    if (textValue.includes(existingTag)) {
+                        textValue = textValue.replace(new RegExp(`\\s*${existingTag}`, 'g'), '');
+                    }
+                }
+            }
+
+            // Remove existing main category tags if a new one is being added (e.g., #seeit)
+            const mainCategoryTagToAdd = tagsToAdd.find(t => Object.values(categories).map(c => c.tag).includes(t));
+            if (mainCategoryTagToAdd) {
+                for (const catId in categories) {
+                    const existingMainTag = categories[catId].tag;
+                    if (textValue.includes(existingMainTag) && existingMainTag !== mainCategoryTagToAdd) {
+                        textValue = textValue.replace(new RegExp(`\\s*${existingMainTag}`, 'g'), '');
+                    }
+                }
+            }
+            
+            // Add new tags, ensuring no duplicates and proper spacing
+            tagsToAdd.forEach(t => {
+                if (!textValue.includes(t)) {
+                    textValue += ` ${t}`;
+                }
+            });
+
+            textarea.value = textValue.trim() + ' '; // Ensure a space at the end for easy typing
+            textarea.focus();
+            textarea.setSelectionRange(textarea.value.length, textarea.value.length); // Move cursor to the end
+            handleNoteInput();
+        }
+
+        function getCategoryNotes(categoryId) {
+            return notes.filter(note => note.categories.includes(categoryId));
+        }
+
+        function updateUI() {
+            // Update note count
+            document.getElementById('note-count').textContent = 
+                `${notes.length} ${notes.length === 1 ? 'note' : 'notes'}`;
+            
+            // Update category counts
+            Object.keys(categories).forEach(catId => {
+                const count = getCategoryNotes(catId).length;
+                document.getElementById(`${catId}-count`).textContent = count;
+                document.getElementById(`${catId}-desc`).textContent = 
+                    count === 0 ? 'No notes yet' : 
+                    count === 1 ? '1 note' : `${count} notes`;
+            });
+            
+            // Update category view if currently viewing one
+            if (currentCategory) {
+                updateCategoryView();
+            }
+        }
+
+        function showCategory(categoryId) {
+            currentCategory = categoryId;
+            const cat = categories[categoryId];
+            
+            document.getElementById('main-view').classList.add('hidden');
+            document.getElementById('category-view').classList.remove('hidden');
+            
+            document.getElementById('current-category-icon').textContent = cat.icon;
+            document.getElementById('current-category-title').textContent = cat.label;
+            
+            updateCategoryView();
+        }
+
+        function updateCategoryView() {
+            const categoryNotes = getCategoryNotes(currentCategory);
+            const categoryNotesSection = document.getElementById('category-notes-section');
+            const emptyState = document.getElementById('empty-category');
+            const cat = categories[currentCategory];
+            
+            document.getElementById('category-note-count').textContent = 
+                `${categoryNotes.length} notes`;
+            
+            if (categoryNotes.length === 0) {
+                categoryNotesSection.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                document.getElementById('empty-category-icon').textContent = cat.icon;
+                document.getElementById('empty-category-tag').textContent = cat.tag;
+            } else {
+                emptyState.classList.add('hidden');
+                categoryNotesSection.innerHTML = ''; // Clear previous content
+
+                const isComfortLevelCategory = ['seeit', 'findit', 'useit'].includes(currentCategory);
+
+                if (isComfortLevelCategory) {
+                    const sortedNotes = {
+                        'verychallenging': [],
+                        'challenging': [],
+                        'comfortable': []
+                    };
+
+                    categoryNotes.forEach(note => {
+                        if (note.comfortLevel && sortedNotes[note.comfortLevel]) {
+                            sortedNotes[note.comfortLevel].push(note);
+                        } else {
+                            // If no specific comfort level, or if it's not a recognized comfort level for these categories,
+                            // put it under 'challenging' as a default if it's one of these specific categories.
+                            sortedNotes['challenging'].push(note); 
+                        }
+                    });
+
+                    // Order of display: Very Challenging, Challenging, Comfortable
+                    const comfortLevelOrder = ['verychallenging', 'challenging', 'comfortable'];
+
+                    comfortLevelOrder.forEach(levelId => {
+                        const levelNotes = sortedNotes[levelId];
+                        if (levelNotes.length > 0) {
+                            categoryNotesSection.innerHTML += `<h3 class="comfort-level-heading">${comfortLevels[levelId].label}</h3>`;
+                            categoryNotesSection.innerHTML += `<div class="notes-list">`;
+                            categoryNotesSection.innerHTML += levelNotes.map(note => `
+                                <div class="note-card">
+                                    <div class="note-header">
+                                        <div class="note-time">${note.timestamp}</div>
+                                        <button class="delete-btn" onclick="deleteNote(${note.id})">✕</button>
+                                    </div>
+                                    <p class="note-text">${note.text}</p>
+                                    ${note.categories.length > 0 || note.comfortLevel ? `
+                                        <div class="note-tags">
+                                            ${note.categories.map(cId => `
+                                                <span class="note-tag tag-${cId}">${categories[cId].label}</span>
+                                            `).join('')}
+                                            ${note.comfortLevel ? `
+                                                <span class="note-tag ${comfortLevels[note.comfortLevel].class}">${comfortLevels[note.comfortLevel].label}</span>
+                                            ` : ''}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `).join('');
+                            categoryNotesSection.innerHTML += `</div>`;
+                        }
+                    });
+
+                } else {
+                    // For 'Background' and 'Other' categories, display as before
+                    categoryNotesSection.innerHTML += `<div class="notes-list">`;
+                    categoryNotesSection.innerHTML += categoryNotes.map(note => `
+                        <div class="note-card">
+                            <div class="note-header">
+                                <div class="note-time">${note.timestamp}</div>
+                                <button class="delete-btn" onclick="deleteNote(${note.id})">✕</button>
+                            </div>
+                            <p class="note-text">${note.text}</p>
+                            ${note.categories.length > 0 || note.comfortLevel ? `
+                                <div class="note-tags">
+                                    ${note.categories.map(cId => `
+                                        <span class="note-tag tag-${cId}">${categories[cId].label}</span>
+                                    `).join('')}
+                                    ${note.comfortLevel ? `
+                                        <span class="note-tag ${comfortLevels[note.comfortLevel].class}">${comfortLevels[note.comfortLevel].label}</span>
+                                    ` : ''}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('');
+                    categoryNotesSection.innerHTML += `</div>`;
+                }
+            }
+        }
+
+        function showMainView() {
+            currentCategory = null;
+            document.getElementById('category-view').classList.add('hidden');
+            document.getElementById('main-view').classList.remove('hidden');
+        }
+
+        function deleteNote(noteId) {
+            notes = notes.filter(note => note.id !== noteId);
+            updateUI();
+        }
+
+        function resetAll() {
+            if (confirm('Are you sure you want to clear all notes? This action cannot be undone.')) {
+                notes = [];
+                document.getElementById('note-textarea').value = '';
+                document.getElementById('add-btn').classList.add('hidden');
+                showMainView();
+                updateUI();
+            }
+        }
+
+        function exportNotes() {
+            let content = `MAKE IT EASIER - NOTE SORTER\n`;
+            content += `Generated: ${new Date().toLocaleString()}\n`;
+            content += `Total Notes: ${notes.length}\n\n`;
+            content += `${'='.repeat(50)}\n\n`;
+            
+            // Loop through primary categories
+            Object.keys(categories).forEach(catId => {
+                const cat = categories[catId];
+                if (!cat.primary) return; // Skip non-primary categories
+
+                content += `--- ${cat.label.toUpperCase()} ---\n\n`;
+                
+                const categoryNotes = getCategoryNotes(catId);
+
+                // If it's a category with comfort levels, group them
+                if (['seeit', 'findit', 'useit'].includes(catId)) {
+                    const sortedNotes = {
+                        'verychallenging': [],
+                        'challenging': [],
+                        'comfortable': []
+                    };
+
+                    categoryNotes.forEach(note => {
+                        if (note.comfortLevel && sortedNotes[note.comfortLevel]) {
+                            sortedNotes[note.comfortLevel].push(note);
+                        } else {
+                             // Default for uncategorized within these sections, or notes added before comfort levels were selected
+                             sortedNotes['challenging'].push(note); 
+                        }
+                    });
+
+                    const comfortLevelOrder = ['verychallenging', 'challenging', 'comfortable'];
+                    comfortLevelOrder.forEach(levelId => {
+                        const levelNotes = sortedNotes[levelId];
+                        if (levelNotes.length > 0) {
+                            content += `  ${comfortLevels[levelId].label.toUpperCase()}\n`;
+                            content += `  ${'-'.repeat(comfortLevels[levelId].label.length)}\n`;
+                            levelNotes.forEach((note, index) => {
+                                content += `  ${index + 1}. [${note.timestamp}] ${note.text}\n`;
+                            });
+                            content += `\n`;
+                        }
+                    });
+
+                    if (categoryNotes.length === 0) {
+                        content += `  No notes in this category.\n\n`;
+                    }
+
+                } else {
+                    // For 'Background' and 'Other' categories, just list notes
+                    if (categoryNotes.length === 0) {
+                        content += `No notes in this category.\n\n`;
+                    } else {
+                        categoryNotes.forEach((note, index) => {
+                            content += `${index + 1}. [${note.timestamp}] ${note.text}\n\n`;
+                        });
+                    }
+                }
+                content += `\n`;
+            });
+            
+            const dataBlob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `notes-export-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize the app
+        updateUI();
+    </script>
+</body>
+</html>
